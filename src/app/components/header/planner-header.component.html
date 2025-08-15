@@ -1,0 +1,16 @@
+<div class="header">
+  <div class="header-container">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput [formControl]="searchControl" placeholder="search by planner name">
+    </mat-form-field>
+    
+    <button mat-button (click)="onCreate.emit()" class="create-button">
+      {{ createButtonText }}
+    </button>
+  </div>
+  
+  <div class="header-actions">
+    <mat-icon class="sync-icon" matTooltip="Sync">sync</mat-icon>
+  </div>
+</div>

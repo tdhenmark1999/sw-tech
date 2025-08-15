@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  frontend:
+    build: .
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    environment:
+      - NODE_ENV=production
+
+  backend:
+    build: ./server
+    ports:
+      - "1337:1337"
+    environment:
+      - NODE_ENV=production
+      - PORT=1337
+    volumes:
+      - ./server/data:/app/data

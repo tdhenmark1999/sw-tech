@@ -1,0 +1,11 @@
+node_modules
+build
+.dockerignore
+Dockerfile
+.git
+.gitignore
+npm-debug.log
+server/node_modules
+.env
+server/.env
+server/package-lock.json

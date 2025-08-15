@@ -1,0 +1,55 @@
+// Shared button styles to avoid duplication
+
+// Base circular button mixin
+@mixin circular-button {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  color: white;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// Add button variant
+.add-button {
+  @include circular-button;
+  background-color: #4caf50;
+
+  &:hover {
+    background-color: #45a049;
+  }
+}
+
+// Delete button variant  
+.delete-button {
+  @include circular-button;
+  background-color: #f44336;
+  margin-top: 8px;
+
+  &:hover {
+    background-color: #d32f2f;
+  }
+}
+
+// Primary action add button (for planner)
+.add-button-primary {
+  @include circular-button;
+  background-color: #1976d2;
+
+  &:hover {
+    background-color: #1565c0;
+  }
+}

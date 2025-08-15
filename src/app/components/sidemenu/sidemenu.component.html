@@ -1,0 +1,37 @@
+<mat-sidenav-container class="sidenav-container" [class.expanded]="isOpen" [class.collapsed]="!isOpen">
+  <mat-sidenav 
+    #sidenav 
+    mode="side" 
+    [opened]="true" 
+    class="sidenav"
+    [class.expanded]="isOpen"
+    [class.collapsed]="!isOpen"
+    [disableClose]="true">
+    
+    <div class="sidenav-header">
+      <div class="header-content" [class.collapsed]="!isOpen">
+        <button mat-icon-button (click)="toggle()" class="menu-toggle">
+          <mat-icon>{{ isOpen ? 'menu_open' : 'menu' }}</mat-icon>
+        </button>
+        <h2 class="app-title" *ngIf="isOpen">SW TECH</h2>
+      </div>
+    </div>
+    
+    <mat-nav-list class="nav-list">
+      <a mat-list-item 
+         *ngFor="let item of menuItems" 
+         [routerLink]="item.route" 
+         routerLinkActive="active"
+         class="nav-item"
+         [matTooltip]="!isOpen ? item.label : ''"
+         matTooltipPosition="right">
+        <mat-icon matListItemIcon>{{item.icon}}</mat-icon>
+        <span matListItemTitle class="nav-label" *ngIf="isOpen">{{item.label}}</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  
+  <mat-sidenav-content class="main-content">
+    <ng-content></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

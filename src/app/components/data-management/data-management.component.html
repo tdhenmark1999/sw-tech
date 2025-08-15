@@ -1,0 +1,84 @@
+<div class="data-management-container">
+  <app-header
+    [showCreateButton]="false"
+    (searchChange)="onSearch($event)">
+  </app-header>
+
+  <div class="data-management-content">
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span>Loading data...</span>
+    </div>
+    
+    <mat-accordion *ngIf="!isLoading">
+      <mat-expansion-panel *ngFor="let category of filteredCategories" class="data-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ category.title }} ({{ category.items.length }} items)
+          </mat-panel-title>
+          <mat-panel-description>
+            Manage {{ category.title.toLowerCase() }} for dropdown lists
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        
+        <div class="panel-content">
+          <div class="panel-actions">
+            <button mat-mini-fab class="add-button" (click)="addItem(category, $event)">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+
+          <form [formGroup]="categoryForms[category.key]" *ngIf="categoryForms[category.key]">
+            <div formArrayName="items" class="items-container">
+              <div *ngFor="let item of getItemsArray(category.key).controls; let i = index" 
+                   [formGroupName]="i" 
+                   class="item-row">
+                
+                <mat-form-field appearance="outline" class="item-field">
+                  <mat-label>Name</mat-label>
+                  <input matInput formControlName="name" placeholder="Enter display name">
+                  <mat-error *ngIf="item.get('name')?.hasError('required')">
+                    Name is required
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="item-field">
+                  <mat-label>Value</mat-label>
+                  <input matInput formControlName="value" placeholder="Enter system value">
+                  <mat-error *ngIf="item.get('value')?.hasError('required')">
+                    Value is required
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="category.hasType" appearance="outline" class="item-field">
+                  <mat-label>Type</mat-label>
+                  <mat-select formControlName="type">
+                    <mat-option *ngFor="let type of reportTypes" [value]="type.value">
+                      {{ type.name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="item.get('type')?.hasError('required')">
+                    Type is required
+                  </mat-error>
+                </mat-form-field>
+
+                <button mat-mini-fab class="delete-button" (click)="removeItem(category.key, i, $event)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="save-section">
+              <button mat-raised-button 
+                      color="primary" 
+                      (click)="saveCategory(category); $event.stopPropagation()"
+                      [disabled]="!categoryForms[category.key].valid">
+                Save {{ category.title }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>

@@ -1,0 +1,162 @@
+<div class="external-system-container">
+  <app-header
+    (searchChange)="onSearch($event)"
+    (onCreate)="createNewSystem()">
+  </app-header>
+
+  <div class="external-system-content-wrapper">
+    <div class="external-system-content">
+      <div *ngIf="isLoading" class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Loading systems...</span>
+      </div>
+      
+      <mat-accordion *ngIf="!isLoading">
+        <mat-expansion-panel *ngFor="let system of paginatedSystems" [expanded]="!system.id">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ system.name || 'New System' }}
+          </mat-panel-title>
+          <div class="system-actions">
+            <mat-icon (click)="copySystem(system)" class="action-icon">content_copy</mat-icon>
+            <mat-icon (click)="deleteSystem(system)" class="action-icon">delete</mat-icon>
+          </div>
+        </mat-expansion-panel-header>
+  
+        <div class="system-content" *ngIf="systemForms[system.tempId]">
+          <form [formGroup]="systemForms[system.tempId]" 
+                (ngSubmit)="system.id ? updateSystem(system.tempId) : saveNewSystem(system.tempId)">
+            <div class="system-field">
+              <div class="system-field-label">
+                <mat-label>Name</mat-label>
+              </div>
+              <mat-form-field appearance="outline" class="input-field">
+                <input matInput type="text" formControlName="name" placeholder="Enter system name" />
+                <mat-error *ngIf="systemForms[system.tempId].get('name')?.hasError('required')">
+                  Name is required
+                </mat-error>
+                <mat-error *ngIf="systemForms[system.tempId].get('name')?.hasError('minLengthTrimmed')">
+                  Name must be at least 3 characters long
+                </mat-error>
+                <mat-error *ngIf="systemForms[system.tempId].get('name')?.hasError('alphanumeric')">
+                  {{ systemForms[system.tempId].get('name')?.getError('alphanumeric')?.message }}
+                </mat-error>
+                <mat-error *ngIf="systemForms[system.tempId].get('name')?.hasError('whitespace')">
+                  Name cannot be empty or contain only spaces
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="system-field">
+              <div class="system-field-label">
+                <mat-label>Base URL:</mat-label>
+              </div>
+              <mat-form-field appearance="outline" class="input-field">
+                <input matInput type="text" formControlName="baseUrl" placeholder="e.g., api.example.com or https://api.example.com" />
+                <mat-error *ngIf="systemForms[system.tempId].get('baseUrl')?.hasError('required')">
+                  Base URL is required
+                </mat-error>
+                <mat-error *ngIf="systemForms[system.tempId].get('baseUrl')?.hasError('url')">
+                  {{ systemForms[system.tempId].get('baseUrl')?.getError('url')?.message }}
+                </mat-error>
+                <mat-error *ngIf="systemForms[system.tempId].get('baseUrl')?.hasError('whitespace')">
+                  URL cannot be empty or contain only spaces
+                </mat-error>
+                <mat-hint align="start">You can enter with or without https://</mat-hint>
+              </mat-form-field>
+            </div>
+            <div class="system-field">
+              <div class="system-field-label">
+                <mat-label>Authentication Method:</mat-label>
+              </div>
+              <mat-form-field appearance="outline" class="input-field-select">
+                <mat-select formControlName="authenticationMethod">
+                  <mat-option *ngFor="let method of authenticationMethods" [value]="method.value">
+                    {{ method.name }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="systemForms[system.tempId].get('authenticationMethod')?.hasError('required')">
+                  Authentication method is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="system-field">
+              <div class="system-field-label">
+                <mat-label>Key:</mat-label>
+              </div>
+              <mat-form-field appearance="outline" class="input-field">
+                <input matInput type="text" formControlName="key" placeholder="Enter authentication key" />
+                <mat-error *ngIf="systemForms[system.tempId].get('key')?.hasError('required')">
+                  Key is required
+                </mat-error>
+                <mat-error *ngIf="systemForms[system.tempId].get('key')?.hasError('apiKey')">
+                  {{ systemForms[system.tempId].get('key')?.getError('apiKey')?.message }}
+                </mat-error>
+                <mat-error *ngIf="systemForms[system.tempId].get('key')?.hasError('minLengthTrimmed')">
+                  Key must be at least 3 characters long
+                </mat-error>
+                <mat-hint align="start">e.g., X-API-Key, Authorization, api_key</mat-hint>
+              </mat-form-field>
+            </div>
+            <div class="system-field">
+              <div class="system-field-label">
+                <mat-label>Value:</mat-label>
+              </div>
+              <ng-container *ngIf="system.id">
+                <div class="value-display">Filled</div>
+              </ng-container>
+              <mat-form-field *ngIf="!system.id" appearance="outline" class="input-field">
+                <input matInput 
+                       type="password" 
+                       formControlName="value" 
+                       placeholder="Enter authentication value" 
+                       autocomplete="new-password" />
+                <mat-error *ngIf="systemForms[system.tempId].get('value')?.hasError('required')">
+                  Value is required
+                </mat-error>
+                <mat-error *ngIf="systemForms[system.tempId].get('value')?.hasError('minLengthTrimmed')">
+                  Value must be at least 3 characters long
+                </mat-error>
+                <mat-error *ngIf="systemForms[system.tempId].get('value')?.hasError('whitespace')">
+                  Value cannot be empty or contain only spaces
+                </mat-error>
+                <mat-hint align="start">Your API key or token (will be hidden after save)</mat-hint>
+              </mat-form-field>
+            </div>
+            <div class="system-field">
+              <div class="system-radio-field-label">
+                <mat-label>Authentication Place:</mat-label>
+              </div>
+              <div class="input-field radio-field">
+                <mat-radio-group formControlName="authenticationPlace">
+                  <mat-radio-button value="header">Header</mat-radio-button>
+                  <mat-radio-button value="query-parameters">Query Parameters</mat-radio-button>
+                </mat-radio-group>
+              </div>
+              <mat-error *ngIf="systemForms[system.tempId].get('authenticationPlace')?.hasError('required')">
+                Authentication place is required
+              </mat-error>
+            </div>
+            <div class="system-actions">
+              <button mat-button type="submit" [disabled]="!systemForms[system.tempId].valid">
+                {{ system.id ? 'Save Changes' : 'Create System' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    </div>
+    
+    <div class="paginator-container">
+      <mat-paginator
+        [length]="totalSystems"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        [pageIndex]="pageIndex"
+        (page)="onPageChange($event)"
+        aria-label="Select page"
+        [showFirstLastButtons]="true">
+      </mat-paginator>
+    </div>
+  </div>
+</div>

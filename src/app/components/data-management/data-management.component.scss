@@ -1,0 +1,120 @@
+@use '../../shared/styles/buttons' as *;
+
+.data-management-container {
+  max-width: 100%;
+  margin: 0;
+
+  .data-management-content {
+    padding: 0;
+    background-color: transparent;
+  }
+  
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 16px;
+    
+    span {
+      color: #666;
+      font-size: 14px;
+    }
+  }
+
+  mat-accordion {
+    .data-panel {
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      
+      .mat-expansion-panel-header {
+        height: 64px;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.04);
+        }
+
+        &.mat-expanded {
+          background-color: #e8f5e8;
+        }
+
+        .mat-panel-title {
+          font-weight: 500;
+          color: #333;
+        }
+
+        .mat-panel-description {
+          color: #666;
+          font-size: 14px;
+        }
+      }
+
+      .panel-content {
+        padding: 16px 0;
+
+        .panel-actions {
+          display: flex;
+          justify-content: flex-end;
+          margin-bottom: 16px;
+        }
+
+        .items-container {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .item-row {
+          display: flex;
+          align-items: flex-start;
+          gap: 16px;
+          padding: 16px;
+          background-color: #f9f9f9;
+          border-radius: 8px;
+          border: 1px solid #e0e0e0;
+
+          .item-field {
+            flex: 1;
+            min-width: 200px;
+
+            ::ng-deep {
+              .mat-mdc-form-field-infix {
+                background-color: white;
+                min-height: 40px;
+              }
+
+              .mdc-notched-outline {
+                border-color: #ddd;
+              }
+
+              .mdc-text-field--focused .mdc-notched-outline {
+                border-color: #1976d2;
+              }
+            }
+          }
+
+        }
+
+        .save-section {
+          display: flex;
+          justify-content: flex-end;
+          margin-top: 24px;
+          padding-top: 16px;
+          border-top: 1px solid #e0e0e0;
+
+          button {
+            min-width: 140px;
+            height: 40px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+    }
+  }
+}
