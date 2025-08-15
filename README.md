@@ -115,11 +115,16 @@ Access: http://localhost:1337
 ## 🗄️ Database
 
 The application uses SQLite database with the following structure:
-- **Systems**: External API configurations
-- **Planners**: Planning configurations
-- **Dropdown Data**: Sources, Runs, Reports, Funds, Fund Aliases
+- **Systems**: External API configurations with authentication details
+- **Planners**: Planning configurations with funds, triggers, sources, runs, and reports
+- **Dropdown Tables**: 
+  - `dropdown_sources` - Data sources (Bloomberg, Reuters, etc.)
+  - `dropdown_runs` - Run types (Daily, Weekly, Monthly)
+  - `dropdown_reports` - Report types with categories (Financial, Risk, Performance)  
+  - `dropdown_funds` - Available funds
+  - `dropdown_fund_aliases` - Fund aliases linked to funds
 
-Database file: `server/database.db`
+Database file: `server/database.sqlite` (created automatically with sample data when server starts)
 
 ## 🔌 API Endpoints
 
@@ -177,7 +182,7 @@ NODE_ENV=development
 ```env
 NODE_ENV=development
 PORT=1337
-DB_PATH=./database.db
+DB_PATH=./database.sqlite
 ```
 
 ### Angular Configuration
